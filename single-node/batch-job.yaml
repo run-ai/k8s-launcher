@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nemo-gpt3-5b
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: <NVCR.IO SECRET>
+      containers:
+      - name: trainer
+        image: nvcr.io/ea-bignlp/nemofw-training:23.05-py3
+        env:
+        - name: CUDA_DEVICE_MAX_CONNECTIONS
+          value: "1"
+        - name: TRANSFORMERS_OFFLINE
+          value: "1"
+        - name: NCCL_AVOID_RECORD_STREAMS
+          value: "1"
+        command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=gpt3_5b_hydra.yaml" ]
+        resources:
+          requests:
+            nvidia.com/gpu: <NUM_GPUS>
+          limits:
+            nvidia.com/gpu: <NUM_GPUS>
+        volumeMounts:
+        - name: megatron-launcher
+          mountPath: /workspace/train
+        - name: data
+          mountPath: /workspace/data
+        - name: config
+          mountPath: /workspace/config
+        - name: large-shm
+          mountPath: /dev/shm
+      restartPolicy: Never
+      volumes:
+      - name: megatron-launcher
+        hostPath:
+          path: <RESULTS_DIR>
+          type: Directory
+      - name: data
+        hostPath:
+          path: <DATA_DIR>
+          type: Directory
+      - name: config
+        configmap:
+          name: nemo-gpt3-5b
+      - name: large-shm
+        emptyDir:
+          medium: Memory
+  backoffLimit: 1
