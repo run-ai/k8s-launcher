@@ -55,9 +55,9 @@ if __name__ == "__main__":
     replace_placeholders('gpt3_5b_hydra.template', 'results/gpt3_5b_hydra.yaml', replacements)
 
     if kubeflow_pytorch:
-        replace_placeholders('multi-node/kubeflow-pytorch-job.yaml', 'results/kubeflow-pytorch-job.yaml', replacements)
+        replace_placeholders('kubeflow-pytorch-job.yaml', 'results/kubeflow-pytorch-job.yaml', replacements)
     else:
-        replace_placeholders('single-node/batch-job.yaml', 'results/batch-job.yaml', replacements)
+        replace_placeholders('batch-job.yaml', 'results/batch-job.yaml', replacements)
     
     if args.dry_run is None:
         os.popen('kubectl apply -f results')
