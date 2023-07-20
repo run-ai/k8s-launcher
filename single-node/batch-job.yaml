@@ -43,7 +43,7 @@ spec:
           path: <DATA_DIR>
           type: Directory
       - name: config
-        configmap:
+        configMap:
           name: nemo-gpt3-5b
       - name: large-shm
         emptyDir:
