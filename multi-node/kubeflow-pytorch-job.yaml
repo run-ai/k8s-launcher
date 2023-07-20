@@ -11,7 +11,7 @@ spec:
           imagePullSecrets:
           - name: <NVCR.IO SECRET>
           containers:
-            - name: trainer-master
+            - name: pytorch
               image: nvcr.io/ea-bignlp/nemofw-training:23.05-py3
               imagePullPolicy: IfNotPresent
               env:
@@ -56,11 +56,11 @@ spec:
                 path: <DATA_DIR>
                 type: Directory
             - name: config
-              configmap:
+              configMap:
                 name: nemo-gpt3-5b
             - name: large-shm
-            emptyDir:
-              medium: Memory
+              emptyDir:
+                medium: Memory
     Worker:
       replicas: <NUM_WORKERS_WITHOUT_MASTER>
       template:
@@ -68,7 +68,7 @@ spec:
           imagePullSecrets:
           - name: <NVCR.IO SECRET>
           containers:
-            - name: trainer-worker
+            - name: pytorch
               image: nvcr.io/ea-bignlp/nemofw-training:23.05-py3
               imagePullPolicy: IfNotPresent
               env:
@@ -113,8 +113,8 @@ spec:
                 path: <DATA_DIR>
                 type: Directory
             - name: config
-              configmap:
+              configMap:
                 name: nemo-gpt3-5b
             - name: large-shm
-            emptyDir:
-              medium: Memory
+              emptyDir:
+                medium: Memory
