@@ -24,6 +24,7 @@ if __name__ == "__main__":
     parser.add_argument('--results_dir', type=str, help='Directory to put the results')
     parser.add_argument('--data_dir', type=str, help='Path to where the preprocessed data exists')
     parser.add_argument('--image_pull_secret', type=str, help='Kubernetes secret that holds nvcr.io credentials')
+    parser.add_argument('--dry_run', type=str, help='Kubernetes secret that holds nvcr.io credentials')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -57,3 +58,6 @@ if __name__ == "__main__":
         replace_placeholders('multi-node/kubeflow-pytorch-job.yaml', 'results/kubeflow-pytorch-job.yaml', replacements)
     else:
         replace_placeholders('single-node/batch-job.yaml', 'results/batch-job.yaml', replacements)
+    
+    if args.dry_run is None:
+        os.popen('kubectl apply -f results')
