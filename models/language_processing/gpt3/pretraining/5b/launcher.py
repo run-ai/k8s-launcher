@@ -26,7 +26,7 @@ if __name__ == "__main__":
     parser.add_argument('--results_dir', type=str, help='Directory to put the results', required=True)
     parser.add_argument('--data_dir', type=str, help='Path to where the preprocessed data exists', required=True)
     parser.add_argument('--image_pull_secret', type=str, help='Kubernetes secret that holds nvcr.io credentials')
-    parser.add_argument('--dry_run', type=str, help='Kubernetes secret that holds nvcr.io credentials')
+    parser.add_argument('--dry_run', type=str, help='Only store the k8s objects')
 
     # Parse the arguments
     try:
