@@ -23,13 +23,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Replace placeholders in a YAML file.')
     parser.add_argument('--num_workers', type=int, help='Number of workers')
     parser.add_argument('--num_gpus', type=int, help='Number of GPUs per node')
-    parser.add_argument('--results_dir', type=str, help='Directory to put the results')
-    parser.add_argument('--data_dir', type=str, help='Path to where the preprocessed data exists')
+    parser.add_argument('--results_dir', type=str, help='Directory to put the results', required=True)
+    parser.add_argument('--data_dir', type=str, help='Path to where the preprocessed data exists', required=True)
     parser.add_argument('--image_pull_secret', type=str, help='Kubernetes secret that holds nvcr.io credentials')
     parser.add_argument('--dry_run', type=str, help='Kubernetes secret that holds nvcr.io credentials')
 
     # Parse the arguments
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except:
+        parser.print_help()
+        sys.exit(0)
 
     kubeflow_pytorch = args.num_workers is not None
     if kubeflow_pytorch:
