@@ -29,12 +29,8 @@ if __name__ == "__main__":
     parser.add_argument('--dry_run', type=str, help='Only store the k8s objects')
 
     # Parse the arguments
-    try:
-        args = parser.parse_args()
-    except:
-        parser.print_help()
-        sys.exit(0)
-
+    args = parser.parse_args()
+    
     kubeflow_pytorch = args.num_workers is not None
     if kubeflow_pytorch:
         args.num_gpus = 1
