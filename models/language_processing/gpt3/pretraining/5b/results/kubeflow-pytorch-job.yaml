@@ -1,0 +1,120 @@
+apiVersion: "kubeflow.org/v1"
+kind: PyTorchJob
+metadata:
+  name: nemo-gpt3-5b
+spec:
+  pytorchReplicaSpecs:
+    Master:
+      replicas: 1
+      template:
+        spec:
+          imagePullSecrets:
+          - name: ngc
+          containers:
+            - name: pytorch
+              image: nvcr.io/ea-bignlp/nemofw-training:23.05-py3
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: CUDA_DEVICE_MAX_CONNECTIONS
+                  value: "1"
+                - name: TRANSFORMERS_OFFLINE
+                  value: "1"
+                - name: NCCL_AVOID_RECORD_STREAMS
+                  value: "1"
+                - name: LOGLEVEL
+                  value: DEBUG
+              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=gpt3_5b_hydra.yaml" ]
+              resources:
+                requests:
+                  nvidia.com/gpu: 1
+                  nvidia.com/resibp12s0: 1
+                  nvidia.com/resibp141s0: 1
+                  nvidia.com/resibp186s0: 1
+                  nvidia.com/resibp75s0: 1
+                limits:
+                  nvidia.com/gpu: 1
+                  nvidia.com/resibp12s0: 1
+                  nvidia.com/resibp141s0: 1
+                  nvidia.com/resibp186s0: 1
+                  nvidia.com/resibp75s0: 1
+              volumeMounts:
+                - name: results
+                  mountPath: /workspace/train
+                - name: data
+                  mountPath: /workspace/data
+                - name: config
+                  mountPath: /workspace/config
+                - name: large-shm
+                  mountPath: /dev/shm
+          volumes:
+            - name: results
+              hostPath:
+                path: /path/to/results
+                type: Directory
+            - name: data
+              hostPath:
+                path: /path/to/data
+                type: Directory
+            - name: config
+              configMap:
+                name: nemo-gpt3-5b
+            - name: large-shm
+              emptyDir:
+                medium: Memory
+    Worker:
+      replicas: 7
+      template:
+        spec:
+          imagePullSecrets:
+          - name: ngc
+          containers:
+            - name: pytorch
+              image: nvcr.io/ea-bignlp/nemofw-training:23.05-py3
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: CUDA_DEVICE_MAX_CONNECTIONS
+                  value: "1"
+                - name: TRANSFORMERS_OFFLINE
+                  value: "1"
+                - name: NCCL_AVOID_RECORD_STREAMS
+                  value: "1"
+                - name: LOGLEVEL
+                  value: DEBUG
+              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=gpt3_5b_hydra.yaml" ]
+              resources:
+                requests:
+                  nvidia.com/gpu: 1
+                  nvidia.com/resibp12s0: 1
+                  nvidia.com/resibp141s0: 1
+                  nvidia.com/resibp186s0: 1
+                  nvidia.com/resibp75s0: 1
+                limits:
+                  nvidia.com/gpu: 1
+                  nvidia.com/resibp12s0: 1
+                  nvidia.com/resibp141s0: 1
+                  nvidia.com/resibp186s0: 1
+                  nvidia.com/resibp75s0: 1
+              volumeMounts:
+                - name: results
+                  mountPath: /workspace/train
+                - name: data
+                  mountPath: /workspace/data
+                - name: config
+                  mountPath: /workspace/config
+                - name: large-shm
+                  mountPath: /dev/shm
+          volumes:
+            - name: results
+              hostPath:
+                path: /path/to/results
+                type: Directory
+            - name: data
+              hostPath:
+                path: /path/to/data
+                type: Directory
+            - name: config
+              configMap:
+                name: nemo-gpt3-5b
+            - name: large-shm
+              emptyDir:
+                medium: Memory

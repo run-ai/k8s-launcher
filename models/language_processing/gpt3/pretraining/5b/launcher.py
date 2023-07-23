@@ -1,5 +1,7 @@
 import argparse
 import os
+import sys
+from subprocess import Popen
 
 def replace_placeholders(file_path, output_file_path, replacement_dict):
     # Read the content of the file
@@ -60,4 +62,4 @@ if __name__ == "__main__":
         replace_placeholders('batch-job.yaml', 'results/batch-job.yaml', replacements)
     
     if args.dry_run is None:
-        os.popen('kubectl apply -f results')
+        Popen(["kubectl", "apply", "-f", "results"], stdout=sys.stdout, stderr=sys.stderr).communicate()
