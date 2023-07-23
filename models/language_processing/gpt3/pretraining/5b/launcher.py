@@ -1,6 +1,8 @@
 import argparse
 import os
 import sys
+import shutil
+
 from subprocess import Popen
 
 def replace_placeholders(file_path, output_file_path, replacement_dict):
@@ -15,8 +17,6 @@ def replace_placeholders(file_path, output_file_path, replacement_dict):
     # Write the modified content back to the file
     with open(output_file_path, 'w') as file:
         file.write(content)
-
-    print(f'Replaced placeholders in {file_path}')
 
 if __name__ == "__main__":
     # Create an argument parser
@@ -63,3 +63,7 @@ if __name__ == "__main__":
     
     if args.dry_run is None:
         Popen(["kubectl", "apply", "-f", "results"], stdout=sys.stdout, stderr=sys.stderr).communicate()
+        shutil.rmtree('results')
+    else:
+        print('[DRY-RUN] Files are in results directory')
+
