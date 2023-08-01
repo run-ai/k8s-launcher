@@ -21,7 +21,7 @@ def replace_placeholders(file_path, output_file_path, replacement_dict):
 if __name__ == "__main__":
     # Create an argument parser
     parser = argparse.ArgumentParser(description='Replace placeholders in a YAML file.')
-    parser.add_argument('--model', type=int, help='Size of model [126m, 5b]')
+    parser.add_argument('--model', type=str, help='Size of model [126m, 5b]')
     parser.add_argument('--num_workers', type=int, help='Number of workers')
     parser.add_argument('--num_gpus', type=int, help='Number of GPUs per node')
     parser.add_argument('--results_dir', type=str, help='Directory to put the results', required=True)
