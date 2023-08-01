@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nemo-gpt3-5b
+  name: nemo-gpt3-126m
 spec:
   template:
     spec:

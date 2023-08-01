@@ -23,7 +23,7 @@ spec:
                   value: "1"
                 - name: LOGLEVEL
                   value: DEBUG
-              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=gpt3_5b_hydra.yaml" ]
+              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=config.yaml" ]
               resources:
                 requests:
                   nvidia.com/gpu: 1
@@ -56,8 +56,9 @@ spec:
                 path: <DATA_DIR>
                 type: Directory
             - name: config
-              configMap:
-                name: nemo-gpt3-5b
+              hostPath:
+                path: <CONFIG_DIR>
+                type: Directory
             - name: large-shm
               emptyDir:
                 medium: Memory
@@ -80,7 +81,7 @@ spec:
                   value: "1"
                 - name: LOGLEVEL
                   value: DEBUG
-              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=gpt3_5b_hydra.yaml" ]
+              command: [ "bash", "-c", "python3 -u /opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py --config-path=/workspace/config --config-name=config.yaml" ]
               resources:
                 requests:
                   nvidia.com/gpu: 1
@@ -113,8 +114,9 @@ spec:
                 path: <DATA_DIR>
                 type: Directory
             - name: config
-              configMap:
-                name: nemo-gpt3-5b
+              hostPath:
+                path: <CONFIG_DIR>
+                type: Directory
             - name: large-shm
               emptyDir:
                 medium: Memory

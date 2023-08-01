@@ -21,12 +21,12 @@ def replace_placeholders(file_path, output_file_path, replacement_dict):
 if __name__ == "__main__":
     # Create an argument parser
     parser = argparse.ArgumentParser(description='Replace placeholders in a YAML file.')
+    parser.add_argument('--model', type=int, help='Size of model [126m, 5b]')
     parser.add_argument('--num_workers', type=int, help='Number of workers')
     parser.add_argument('--num_gpus', type=int, help='Number of GPUs per node')
     parser.add_argument('--results_dir', type=str, help='Directory to put the results', required=True)
     parser.add_argument('--data_dir', type=str, help='Path to where the preprocessed data exists', required=True)
     parser.add_argument('--image_pull_secret', type=str, help='Kubernetes secret that holds nvcr.io credentials')
-    parser.add_argument('--dry_run', type=str, help='Only store the k8s objects')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -38,6 +38,9 @@ if __name__ == "__main__":
         args.num_workers = 1
     # Build a dictionary of placeholders and their corresponding values
     replacements = {}
+    model = "5b"
+    if args.model is not None:
+        model = args.model
     if args.num_workers is not None:
         replacements['<NUM_WORKERS>'] = args.num_workers
         replacements['<NUM_WORKERS_WITHOUT_MASTER>'] = args.num_workers - 1
@@ -54,16 +57,10 @@ if __name__ == "__main__":
     if not os.path.exists('results'):
         os.makedirs('results')
     # Call the function with the provided arguments
-    replace_placeholders('gpt3_5b_hydra.template', 'results/gpt3_5b_hydra.yaml', replacements)
+    replace_placeholders(model + '/config.template', 'results/config.yaml', replacements)
 
     if kubeflow_pytorch:
-        replace_placeholders('kubeflow-pytorch-job.yaml', 'results/kubeflow-pytorch-job.yaml', replacements)
+        replace_placeholders(model + '/kubeflow-pytorch-job.yaml', 'results/kubeflow-pytorch-job.yaml', replacements)
     else:
-        replace_placeholders('batch-job.yaml', 'results/batch-job.yaml', replacements)
+        replace_placeholders(model + '/batch-job.yaml', 'results/batch-job.yaml', replacements)
     
-    if args.dry_run is None:
-        Popen(["kubectl", "apply", "-f", "results"], stdout=sys.stdout, stderr=sys.stderr).communicate()
-        shutil.rmtree('results')
-    else:
-        print('[DRY-RUN] Files are in results directory')
-
